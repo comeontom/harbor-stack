@@ -2,7 +2,6 @@ version: '3'
 services:
   log:
     image: vmware/harbor-log:v1.5.2
-    container_name: harbor-log 
     restart: always
     volumes:
       - /var/log/harbor/:/var/log/docker/:z
@@ -11,7 +10,6 @@ services:
       - harbor
   registry:
     image: vmware/registry-photon:v2.6.2-v1.5.2
-    container_name: registry
     restart: always
     volumes:
       - /data/registry:/storage:z
@@ -31,7 +29,6 @@ services:
         tag: "registry"
   mysql:
     image: vmware/harbor-db:v1.5.2
-    container_name: harbor-db
     restart: always
     volumes:
       - /data/database:/var/lib/mysql:z
@@ -48,7 +45,6 @@ services:
         tag: "mysql"
   adminserver:
     image: vmware/harbor-adminserver:v1.5.2
-    container_name: harbor-adminserver
     env_file:
       - ./common/config/adminserver/env
     restart: always
@@ -67,7 +63,6 @@ services:
         tag: "adminserver"
   ui:
     image: vmware/harbor-ui:v1.5.2
-    container_name: harbor-ui
     env_file:
       - ./common/config/ui/env
     restart: always
@@ -91,7 +86,6 @@ services:
         tag: "ui"
   jobservice:
     image: vmware/harbor-jobservice:v1.5.2
-    container_name: harbor-jobservice
     env_file:
       - ./common/config/jobservice/env
     restart: always
@@ -111,7 +105,6 @@ services:
         tag: "jobservice"
   redis:
     image: vmware/redis-photon:v1.5.2
-    container_name: redis
     restart: always
     volumes:
       - /data/redis:/data
@@ -126,7 +119,6 @@ services:
         tag: "redis"
   proxy:
     image: vmware/nginx-photon:v1.5.2
-    container_name: nginx
     restart: always
     volumes:
       - ./common/config/nginx:/etc/nginx:z

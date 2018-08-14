@@ -3,7 +3,7 @@ services:
   log:
     image: vmware/harbor-log:v1.5.2
     volumes:
-      - /var/log/harbor/:/var/log/docker/:z
+      - log_volume:/var/log/docker/:z
       # - ./common/config/log/:/etc/logrotate.d/:z
     configs:
       - source: harbor_log_config
@@ -21,7 +21,7 @@ services:
       - source: harbor_registry_root
         target: /etc/registry/root.crt
     volumes:
-      - /data/registry:/storage:z
+      - registry_volume:/storage:z
       # - ./common/config/registry/:/etc/registry/:z
     networks:
       - harbor
@@ -45,7 +45,7 @@ services:
       mode: replicated
       replicas: 1
     volumes:
-      - /data/database:/var/lib/mysql:z
+      - mysql_volume:/var/lib/mysql:z
     networks:
       - harbor
     environment:
@@ -131,9 +131,9 @@ services:
       mode: replicated
       replicas: 1
     volumes:
-      - /data/config/:/etc/adminserver/config/:z
-      - /data/secretkey:/etc/adminserver/key:z
-      - /data/:/data/:z
+      - adminserver_config_volume:/etc/adminserver/config/:z
+      - adminserver_secretkey_volume:/etc/adminserver/key:z
+      - adminserver_volume:/data/:z
     networks:
       - harbor
     depends_on:
@@ -168,9 +168,9 @@ services:
       # - ./common/config/ui/app.conf:/etc/ui/app.conf:z
       # - ./common/config/ui/private_key.pem:/etc/ui/private_key.pem:z
       # - ./common/config/ui/certificates/:/etc/ui/certificates/:z
-      - /data/secretkey:/etc/ui/key:z
-      - /data/ca_download/:/etc/ui/ca/:z
-      - /data/psc/:/etc/ui/token/:z
+      - ui_secretkey_volume:/etc/ui/key:z
+      - ui_ca_volume:/etc/ui/ca/:z
+      - ui_psc_volume:/etc/ui/token/:z
     networks:
       - harbor
     depends_on:
@@ -198,7 +198,7 @@ services:
       - source: harbor_jobservice_config
         target: /etc/jobservice/config.yml
     volumes:
-      - /data/job_logs:/var/log/jobs:z
+      - jobservice_volume:/var/log/jobs:z
       # - ./common/config/jobservice/config.yml:/etc/jobservice/config.yml:z
     networks:
       - harbor
@@ -217,7 +217,7 @@ services:
       mode: replicated
       replicas: 1
     volumes:
-      - /data/redis:/data
+      - redis_volume:/data
     networks:
       - harbor
     depends_on:
@@ -269,6 +269,30 @@ configs:
     file: ./common/config/jobservice/config.yml
   harbor_proxy_config:
     file: ./common/config/nginx/nginx.conf
+
+volumes:
+  log_volume:
+    driver: local
+  registry_volume:
+    driver: local
+  mysql_volume: 
+    driver: local
+  adminserver_config_volume:
+    driver: local
+  adminserver_secretkey_volume:
+    driver: local
+  adminserver_volume:
+    driver: local
+  ui_secretkey_volume:
+    driver: local
+  ui_ca_volume:
+    driver: local
+  ui_psc_volume:
+    driver: local
+  jobservice_volume:
+    driver: local
+  redis_volume:
+    driver: local
 
 
 networks:

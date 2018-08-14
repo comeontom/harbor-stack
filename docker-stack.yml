@@ -117,7 +117,7 @@ services:
       - NOTARY_URL=http://notary-server:4443
       - REGISTRY_STORAGE_PROVIDER_NAME=filesystem
       - READ_ONLY=false
-      - SKIP_RELOAD_ENV_PATTERN=$^
+      - SKIP_RELOAD_ENV_PATTERN=$$^
       - RELOAD_KEY=
     # env_file:
     #   - ./common/config/adminserver/env

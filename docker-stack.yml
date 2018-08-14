@@ -5,15 +5,23 @@ services:
     restart: always
     volumes:
       - /var/log/harbor/:/var/log/docker/:z
-      - ./common/config/log/:/etc/logrotate.d/:z
+      # - ./common/config/log/:/etc/logrotate.d/:z
+    configs:
+      - source: harbor_log_config
+        target: /etc/logrotate.d/logrotate.conf
     networks:
       - harbor
   registry:
     image: vmware/registry-photon:v2.6.2-v1.5.2
     restart: always
+    configs:
+      - source: harbor_registry_config
+        target: /etc/registry/config.yml
+      - source: harbor_registry_root
+        target: /etc/registry/root.crt
     volumes:
       - /data/registry:/storage:z
-      - ./common/config/registry/:/etc/registry/:z
+      # - ./common/config/registry/:/etc/registry/:z
     networks:
       - harbor
     environment:
@@ -34,8 +42,10 @@ services:
       - /data/database:/var/lib/mysql:z
     networks:
       - harbor
-    env_file:
-      - ./common/config/db/env
+    environment:
+      - MYSQL_ROOT_PASSWORD=root123
+    # env_file:
+    #   - ./common/config/db/env
     depends_on:
       - log
     logging:
@@ -45,8 +55,72 @@ services:
         tag: "mysql"
   adminserver:
     image: vmware/harbor-adminserver:v1.5.2
-    env_file:
-      - ./common/config/adminserver/env
+    environment:
+      - PORT=8080
+      - LOG_LEVEL=info
+      - EXT_ENDPOINT=http:-moria.harbor.com
+      - AUTH_MODE=db_auth
+      - SELF_REGISTRATION=on
+      - LDAP_URL=ldaps:-ldap.mydomain.com
+      - LDAP_SEARCH_DN=
+      - LDAP_SEARCH_PWD=
+      - LDAP_BASE_DN=ou=people,dc=mydomain,dc=com
+      - LDAP_FILTER=
+      - LDAP_UID=uid
+      - LDAP_SCOPE=2
+      - LDAP_TIMEOUT=5
+      - LDAP_VERIFY_CERT=true
+      - LDAP_GROUP_BASEDN=ou=group,dc=mydomain,dc=com
+      - LDAP_GROUP_FILTER=objectclass=group
+      - LDAP_GROUP_GID=cn
+      - LDAP_GROUP_SCOPE=2
+      - DATABASE_TYPE=mysql
+      - MYSQL_HOST=mysql
+      - MYSQL_PORT=3306
+      - MYSQL_USR=root
+      - MYSQL_PWD=root123
+      - MYSQL_DATABASE=registry
+      - REGISTRY_URL=http:-registry:5000
+      - TOKEN_SERVICE_URL=http:-ui:8080/service/token
+      - EMAIL_HOST=smtp.mydomain.com
+      - EMAIL_PORT=25
+      - EMAIL_USR=sample_admin@mydomain.com
+      - EMAIL_PWD=abc
+      - EMAIL_SSL=false
+      - EMAIL_FROM=admin <sample_admin@mydomain.com>
+      - EMAIL_IDENTITY=
+      - EMAIL_INSECURE=false
+      - HARBOR_ADMIN_PASSWORD=Harbor12345
+      - PROJECT_CREATION_RESTRICTION=everyone
+      - MAX_JOB_WORKERS=50
+      - UI_SECRET=zTcjeRMkB7N7T0VP
+      - JOBSERVICE_SECRET=Z6OpX2B2pcGSREOi
+      - TOKEN_EXPIRATION=30
+      - CFG_EXPIRATION=5
+      - GODEBUG=netdns=cgo
+      - ADMIRAL_URL=NA
+      - WITH_NOTARY=False
+      - WITH_CLAIR=False
+      - CLAIR_DB_PASSWORD=password
+      - CLAIR_DB_HOST=postgres
+      - CLAIR_DB_PORT=5432
+      - CLAIR_DB_USERNAME=postgres
+      - CLAIR_DB=postgres
+      - RESET=false
+      - UAA_ENDPOINT=uaa.mydomain.org
+      - UAA_CLIENTID=id
+      - UAA_CLIENTSECRET=secret
+      - UAA_VERIFY_CERT=true
+      - UI_URL=http:-ui:8080
+      - JOBSERVICE_URL=http:-jobservice:8080
+      - CLAIR_URL=http:-clair:6060
+      - NOTARY_URL=http:-notary-server:4443
+      - REGISTRY_STORAGE_PROVIDER_NAME=filesystem
+      - READ_ONLY=false
+      - SKIP_RELOAD_ENV_PATTERN=$^
+      - RELOAD_KEY=
+    # env_file:
+    #   - ./common/config/adminserver/env
     restart: always
     volumes:
       - /data/config/:/etc/adminserver/config/:z
@@ -63,13 +137,27 @@ services:
         tag: "adminserver"
   ui:
     image: vmware/harbor-ui:v1.5.2
-    env_file:
-      - ./common/config/ui/env
+    environment:
+      - LOG_LEVEL=info
+      - CONFIG_PATH=/etc/ui/app.conf
+      - UI_SECRET=zTcjeRMkB7N7T0VP
+      - JOBSERVICE_SECRET=Z6OpX2B2pcGSREOi
+      - GODEBUG=netdns=cgo
+      - ADMINSERVER_URL=http:-adminserver:8080
+      - UAA_CA_ROOT=/etc/ui/certificates/uaa_ca.pem
+      - _REDIS_URL=redis:6379
+    # env_file:
+    #   - ./common/config/ui/env
     restart: always
+    configs:
+      - source: harbor_ui_app_config
+        target: /etc/ui/app.conf
+      - source: harbor_ui_private_key_pem
+        target: /etc/ui/private_key.pem
     volumes:
-      - ./common/config/ui/app.conf:/etc/ui/app.conf:z
-      - ./common/config/ui/private_key.pem:/etc/ui/private_key.pem:z
-      - ./common/config/ui/certificates/:/etc/ui/certificates/:z
+      # - ./common/config/ui/app.conf:/etc/ui/app.conf:z
+      # - ./common/config/ui/private_key.pem:/etc/ui/private_key.pem:z
+      # - ./common/config/ui/certificates/:/etc/ui/certificates/:z
       - /data/secretkey:/etc/ui/key:z
       - /data/ca_download/:/etc/ui/ca/:z
       - /data/psc/:/etc/ui/token/:z
@@ -86,12 +174,20 @@ services:
         tag: "ui"
   jobservice:
     image: vmware/harbor-jobservice:v1.5.2
-    env_file:
-      - ./common/config/jobservice/env
+    environment:
+      - UI_SECRET=zTcjeRMkB7N7T0VP
+      - JOBSERVICE_SECRET=Z6OpX2B2pcGSREOi
+      - ADMINSERVER_URL=http:-adminserver:8080
+      - GODEBUG=netdns=cgo
+    # env_file:
+    #   - ./common/config/jobservice/env
     restart: always
+    configs:
+      - source: harbor_jobservice_config
+        target: /etc/jobservice/config.yml
     volumes:
       - /data/job_logs:/var/log/jobs:z
-      - ./common/config/jobservice/config.yml:/etc/jobservice/config.yml:z
+      # - ./common/config/jobservice/config.yml:/etc/jobservice/config.yml:z
     networks:
       - harbor
     depends_on:
@@ -120,13 +216,16 @@ services:
   proxy:
     image: vmware/nginx-photon:v1.5.2
     restart: always
-    volumes:
-      - ./common/config/nginx:/etc/nginx:z
+    configs:
+      - source: harbor_proxy_config
+        target: /etc/nginx/nginx.conf
+    # volumes:
+    #   - ./common/config/nginx:/etc/nginx:z
     networks:
       - harbor
     ports:
       - 8888:80
-      # - 443:443
+      - 443:443
       # - 4443:4443
     depends_on:
       - mysql
@@ -138,6 +237,24 @@ services:
       options:  
         syslog-address: "tcp://log:10514"
         tag: "proxy"
+
+configs: 
+  harbor_log_config:
+    file: ./common/config/log/logrotate.conf
+  harbor_registry_config: 
+    file: ./common/config/registry/config.yml
+  harbor_registry_root:
+    file: ./common/config/registry/root.crt
+  harbor_ui_app_config:
+    file: ./common/config/ui/app.conf
+  harbor_ui_private_key_pem:
+    file: ./common/config/ui/private_key.pem
+  harbor_jobservice_config:
+    file: ./common/config/jobservice/config.yml
+  harbor_proxy_config:
+    file: ./common/config/nginx/nginx.conf
+
+
 networks:
   harbor:
     external: false

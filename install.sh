@@ -187,12 +187,12 @@ then
 	docker_compose_list="${docker_compose_list} -f docker-compose.clair.yml"
 fi
 
-if [ -n "$(docker-compose $docker_compose_list ps -q)"  ]
-then
-	note "stopping existing Harbor instance ..." 
-	docker-compose $docker_compose_list down -v
-fi
-echo ""
+# if [ -n "$(docker-compose $docker_compose_list ps -q)"  ]
+# then
+# 	note "stopping existing Harbor instance ..." 
+# 	docker-compose $docker_compose_list down -v
+# fi
+# echo ""
 
 h2 "[Step $item]: starting Harbor ..."
 if [ $harbor_ha ]

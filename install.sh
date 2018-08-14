@@ -146,7 +146,7 @@ function check_dockercompose {
 
 h2 "[Step $item]: checking installation environment ..."; let item+=1
 check_docker
-check_dockercompose
+# check_dockercompose
 
 if [ -f harbor*.tar.gz ]
 then
@@ -202,7 +202,10 @@ then
     mv docker-compose.clair.yml docker-compose.clair.yml.bak
     cp ha/docker-compose.clair.yml docker-compose.clair.yml
 fi
-docker-compose $docker_compose_list up -d
+echo "=========="
+echo "${docker_compose_list}"
+echo "=========="
+# docker-compose $docker_compose_list up -d
 
 protocol=http
 hostname=reg.mydomain.com

@@ -6,7 +6,7 @@ services:
       - log_volume:/var/log/docker/:z
       # - ./common/config/log/:/etc/logrotate.d/:z
     configs:
-      - source: harbor_log_config
+      - source: log_config
         target: /etc/logrotate.d/logrotate.conf
     networks:
       - harbor
@@ -16,9 +16,9 @@ services:
   registry:
     image: vmware/registry-photon:v2.6.2-v1.5.2
     configs:
-      - source: harbor_registry_config
+      - source: registry_config
         target: /etc/registry/config.yml
-      - source: harbor_registry_root
+      - source: registry_root
         target: /etc/registry/root.crt
     volumes:
       - registry_volume:/storage:z
@@ -160,9 +160,9 @@ services:
       mode: replicated
       replicas: 1
     configs:
-      - source: harbor_ui_app_config
+      - source: ui_app_config
         target: /etc/ui/app.conf
-      - source: harbor_ui_private_key_pem
+      - source: ui_private_key_pem
         target: /etc/ui/private_key.pem
     volumes:
       # - ./common/config/ui/app.conf:/etc/ui/app.conf:z
@@ -195,7 +195,7 @@ services:
       mode: replicated
       replicas: 1
     configs:
-      - source: harbor_jobservice_config
+      - source: jobservice_config
         target: /etc/jobservice/config.yml
     volumes:
       - jobservice_volume:/var/log/jobs:z
@@ -233,7 +233,7 @@ services:
       mode: replicated
       replicas: 1
     configs:
-      - source: harbor_proxy_config
+      - source: proxy_config
         target: /etc/nginx/nginx.conf
     # volumes:
     #   - ./common/config/nginx:/etc/nginx:z
@@ -255,19 +255,19 @@ services:
         tag: "proxy"
 
 configs: 
-  harbor_log_config:
+  log_config:
     file: ./common/config/log/logrotate.conf
-  harbor_registry_config: 
+  registry_config: 
     file: ./common/config/registry/config.yml
-  harbor_registry_root:
+  registry_root:
     file: ./common/config/registry/root.crt
-  harbor_ui_app_config:
+  ui_app_config:
     file: ./common/config/ui/app.conf
-  harbor_ui_private_key_pem:
+  ui_private_key_pem:
     file: ./common/config/ui/private_key.pem
-  harbor_jobservice_config:
+  jobservice_config:
     file: ./common/config/jobservice/config.yml
-  harbor_proxy_config:
+  proxy_config:
     file: ./common/config/nginx/nginx.conf
 
 volumes:

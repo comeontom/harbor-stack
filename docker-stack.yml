@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 services:
   log:
     image: vmware/harbor-log:v1.5.2
@@ -7,8 +7,6 @@ services:
     volumes:
       - /var/log/harbor/:/var/log/docker/:z
       - ./common/config/log/:/etc/logrotate.d/:z
-    ports:
-      - 127.0.0.1:1514:10514
     networks:
       - harbor
   registry:
@@ -29,7 +27,7 @@ services:
     logging:
       driver: "syslog"
       options:  
-        syslog-address: "tcp://127.0.0.1:1514"
+        syslog-address: "tcp://log:10514"
         tag: "registry"
   mysql:
     image: vmware/harbor-db:v1.5.2
@@ -46,7 +44,7 @@ services:
     logging:
       driver: "syslog"
       options:  
-        syslog-address: "tcp://127.0.0.1:1514"
+        syslog-address: "tcp://log:10514"
         tag: "mysql"
   adminserver:
     image: vmware/harbor-adminserver:v1.5.2
@@ -65,7 +63,7 @@ services:
     logging:
       driver: "syslog"
       options:  
-        syslog-address: "tcp://127.0.0.1:1514"
+        syslog-address: "tcp://log:10514"
         tag: "adminserver"
   ui:
     image: vmware/harbor-ui:v1.5.2
@@ -89,7 +87,7 @@ services:
     logging:
       driver: "syslog"
       options:  
-        syslog-address: "tcp://127.0.0.1:1514"
+        syslog-address: "tcp://log:10514"
         tag: "ui"
   jobservice:
     image: vmware/harbor-jobservice:v1.5.2
@@ -109,7 +107,7 @@ services:
     logging:
       driver: "syslog"
       options:  
-        syslog-address: "tcp://127.0.0.1:1514"
+        syslog-address: "tcp://log:10514"
         tag: "jobservice"
   redis:
     image: vmware/redis-photon:v1.5.2
@@ -124,7 +122,7 @@ services:
     logging:
       driver: "syslog"
       options:  
-        syslog-address: "tcp://127.0.0.1:1514"
+        syslog-address: "tcp://log:10514"
         tag: "redis"
   proxy:
     image: vmware/nginx-photon:v1.5.2
@@ -135,9 +133,9 @@ services:
     networks:
       - harbor
     ports:
-      - 80:80
-      - 443:443
-      - 4443:4443
+      - 8888:80
+      # - 443:443
+      # - 4443:4443
     depends_on:
       - mysql
       - registry
@@ -146,7 +144,7 @@ services:
     logging:
       driver: "syslog"
       options:  
-        syslog-address: "tcp://127.0.0.1:1514"
+        syslog-address: "tcp://log:10514"
         tag: "proxy"
 networks:
   harbor:

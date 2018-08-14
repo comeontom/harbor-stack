@@ -127,7 +127,9 @@ services:
       - RELOAD_KEY=
     # env_file:
     #   - ./common/config/adminserver/env
-    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     volumes:
       - /data/config/:/etc/adminserver/config/:z
       - /data/secretkey:/etc/adminserver/key:z

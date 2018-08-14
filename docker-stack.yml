@@ -2,7 +2,6 @@ version: '3.3'
 services:
   log:
     image: vmware/harbor-log:v1.5.2
-    restart: always
     volumes:
       - /var/log/harbor/:/var/log/docker/:z
       # - ./common/config/log/:/etc/logrotate.d/:z
@@ -11,9 +10,11 @@ services:
         target: /etc/logrotate.d/logrotate.conf
     networks:
       - harbor
+    deploy:
+      mode: replicated
+      replicas: 1
   registry:
     image: vmware/registry-photon:v2.6.2-v1.5.2
-    restart: always
     configs:
       - source: harbor_registry_config
         target: /etc/registry/config.yml
@@ -35,9 +36,14 @@ services:
       options:  
         syslog-address: "tcp://log:10514"
         tag: "registry"
+    deploy:
+      mode: replicated
+      replicas: 1
   mysql:
     image: vmware/harbor-db:v1.5.2
-    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     volumes:
       - /data/database:/var/lib/mysql:z
     networks:
@@ -148,7 +154,9 @@ services:
       - _REDIS_URL=redis:6379
     # env_file:
     #   - ./common/config/ui/env
-    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     configs:
       - source: harbor_ui_app_config
         target: /etc/ui/app.conf
@@ -181,7 +189,9 @@ services:
       - GODEBUG=netdns=cgo
     # env_file:
     #   - ./common/config/jobservice/env
-    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     configs:
       - source: harbor_jobservice_config
         target: /etc/jobservice/config.yml
@@ -201,7 +211,9 @@ services:
         tag: "jobservice"
   redis:
     image: vmware/redis-photon:v1.5.2
-    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     volumes:
       - /data/redis:/data
     networks:
@@ -215,7 +227,9 @@ services:
         tag: "redis"
   proxy:
     image: vmware/nginx-photon:v1.5.2
-    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
     configs:
       - source: harbor_proxy_config
         target: /etc/nginx/nginx.conf

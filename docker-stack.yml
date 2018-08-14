@@ -1,18 +1,18 @@
 version: '3.3'
 services:
-  log:
-    image: vmware/harbor-log:v1.5.2
-    volumes:
-      - log_volume:/var/log/docker/:z
-      # - ./common/config/log/:/etc/logrotate.d/:z
-    configs:
-      - source: log_config
-        target: /etc/logrotate.d/logrotate.conf
-    networks:
-      - harbor
-    deploy:
-      mode: replicated
-      replicas: 1
+  # log:
+  #   image: vmware/harbor-log:v1.5.2
+  #   volumes:
+  #     - log_volume:/var/log/docker/:z
+  #     # - ./common/config/log/:/etc/logrotate.d/:z
+  #   configs:
+  #     - source: log_config
+  #       target: /etc/logrotate.d/logrotate.conf
+  #   networks:
+  #     - harbor
+  #   deploy:
+  #     mode: replicated
+  #     replicas: 1
   registry:
     image: vmware/registry-photon:v2.6.2-v1.5.2
     configs:
@@ -31,11 +31,11 @@ services:
       ["serve", "/etc/registry/config.yml"]
     depends_on:
       - log
-    logging:
-      driver: "syslog"
-      options:  
-        syslog-address: "tcp://log:10514"
-        tag: "registry"
+    # logging:
+    #   driver: "syslog"
+    #   options:  
+    #     syslog-address: "tcp://log:10514"
+    #     tag: "registry"
     deploy:
       mode: replicated
       replicas: 1
@@ -54,11 +54,11 @@ services:
     #   - ./common/config/db/env
     depends_on:
       - log
-    logging:
-      driver: "syslog"
-      options:  
-        syslog-address: "tcp://log:10514"
-        tag: "mysql"
+    # logging:
+    #   driver: "syslog"
+    #   options:  
+    #     syslog-address: "tcp://log:10514"
+    #     tag: "mysql"
   adminserver:
     image: vmware/harbor-adminserver:v1.5.2
     environment:
@@ -138,11 +138,11 @@ services:
       - harbor
     depends_on:
       - log
-    logging:
-      driver: "syslog"
-      options:  
-        syslog-address: "tcp://log:10514"
-        tag: "adminserver"
+    # logging:
+    #   driver: "syslog"
+    #   options:  
+    #     syslog-address: "tcp://log:10514"
+    #     tag: "adminserver"
   ui:
     image: vmware/harbor-ui:v1.5.2
     environment:
@@ -177,11 +177,11 @@ services:
       - log
       - adminserver
       - registry
-    logging:
-      driver: "syslog"
-      options:  
-        syslog-address: "tcp://log:10514"
-        tag: "ui"
+    # logging:
+    #   driver: "syslog"
+    #   options:  
+    #     syslog-address: "tcp://log:10514"
+    #     tag: "ui"
   jobservice:
     image: vmware/harbor-jobservice:v1.5.2
     environment:
@@ -222,11 +222,11 @@ services:
       - harbor
     depends_on:
       - log
-    logging:
-      driver: "syslog"
-      options:  
-        syslog-address: "tcp://log:10514"
-        tag: "redis"
+    # logging:
+    #   driver: "syslog"
+    #   options:  
+    #     syslog-address: "tcp://log:10514"
+    #     tag: "redis"
   proxy:
     image: vmware/nginx-photon:v1.5.2
     deploy:
@@ -248,11 +248,11 @@ services:
       - registry
       - ui
       - log
-    logging:
-      driver: "syslog"
-      options:  
-        syslog-address: "tcp://log:10514"
-        tag: "proxy"
+    # logging:
+    #   driver: "syslog"
+    #   options:  
+    #     syslog-address: "tcp://log:10514"
+    #     tag: "proxy"
 
 configs: 
   log_config:

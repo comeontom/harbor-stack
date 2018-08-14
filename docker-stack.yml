@@ -58,10 +58,10 @@ services:
     environment:
       - PORT=8080
       - LOG_LEVEL=info
-      - EXT_ENDPOINT=http:-moria.harbor.com
+      - EXT_ENDPOINT=http://harbor.moria.io
       - AUTH_MODE=db_auth
       - SELF_REGISTRATION=on
-      - LDAP_URL=ldaps:-ldap.mydomain.com
+      - LDAP_URL=ldaps://ldap.mydomain.com
       - LDAP_SEARCH_DN=
       - LDAP_SEARCH_PWD=
       - LDAP_BASE_DN=ou=people,dc=mydomain,dc=com
@@ -80,8 +80,8 @@ services:
       - MYSQL_USR=root
       - MYSQL_PWD=root123
       - MYSQL_DATABASE=registry
-      - REGISTRY_URL=http:-registry:5000
-      - TOKEN_SERVICE_URL=http:-ui:8080/service/token
+      - REGISTRY_URL=http://registry:5000
+      - TOKEN_SERVICE_URL=http://ui:8080/service/token
       - EMAIL_HOST=smtp.mydomain.com
       - EMAIL_PORT=25
       - EMAIL_USR=sample_admin@mydomain.com
@@ -93,8 +93,8 @@ services:
       - HARBOR_ADMIN_PASSWORD=Harbor12345
       - PROJECT_CREATION_RESTRICTION=everyone
       - MAX_JOB_WORKERS=50
-      - UI_SECRET=zTcjeRMkB7N7T0VP
-      - JOBSERVICE_SECRET=Z6OpX2B2pcGSREOi
+      - UI_SECRET=fhpQSxCVFDtu9PDx
+      - JOBSERVICE_SECRET=bsN7TRD82G55UZWx
       - TOKEN_EXPIRATION=30
       - CFG_EXPIRATION=5
       - GODEBUG=netdns=cgo
@@ -111,10 +111,10 @@ services:
       - UAA_CLIENTID=id
       - UAA_CLIENTSECRET=secret
       - UAA_VERIFY_CERT=true
-      - UI_URL=http:-ui:8080
-      - JOBSERVICE_URL=http:-jobservice:8080
-      - CLAIR_URL=http:-clair:6060
-      - NOTARY_URL=http:-notary-server:4443
+      - UI_URL=http://ui:8080
+      - JOBSERVICE_URL=http://jobservice:8080
+      - CLAIR_URL=http://clair:6060
+      - NOTARY_URL=http://notary-server:4443
       - REGISTRY_STORAGE_PROVIDER_NAME=filesystem
       - READ_ONLY=false
       - SKIP_RELOAD_ENV_PATTERN=$^
@@ -143,7 +143,7 @@ services:
       - UI_SECRET=zTcjeRMkB7N7T0VP
       - JOBSERVICE_SECRET=Z6OpX2B2pcGSREOi
       - GODEBUG=netdns=cgo
-      - ADMINSERVER_URL=http:-adminserver:8080
+      - ADMINSERVER_URL=http://adminserver:8080
       - UAA_CA_ROOT=/etc/ui/certificates/uaa_ca.pem
       - _REDIS_URL=redis:6379
     # env_file:
@@ -177,7 +177,7 @@ services:
     environment:
       - UI_SECRET=zTcjeRMkB7N7T0VP
       - JOBSERVICE_SECRET=Z6OpX2B2pcGSREOi
-      - ADMINSERVER_URL=http:-adminserver:8080
+      - ADMINSERVER_URL=http://adminserver:8080
       - GODEBUG=netdns=cgo
     # env_file:
     #   - ./common/config/jobservice/env

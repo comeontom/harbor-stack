@@ -132,8 +132,11 @@ services:
       replicas: 1
     volumes:
       - adminserver_config_volume:/etc/adminserver/config/
-      - adminserver_secretkey_volume:/etc/adminserver/key
+      # - adminserver_secretkey_volume:/etc/adminserver/key
       - adminserver_volume:/data/
+    configs:
+      - source: adminserver_key
+        target: /etc/adminserver/key
     networks:
       - harbor
     # depends_on:
@@ -255,6 +258,8 @@ services:
     #     tag: "proxy"
 
 configs: 
+  adminserver_key: 
+    file: /data/secretkey
   log_config:
     file: ./common/config/log/logrotate.conf
   registry_config: 
@@ -279,8 +284,8 @@ volumes:
     driver: local
   adminserver_config_volume:
     driver: local
-  adminserver_secretkey_volume:
-    driver: local
+  # adminserver_secretkey_volume:
+  #   driver: local
   adminserver_volume:
     driver: local
   ui_secretkey_volume:

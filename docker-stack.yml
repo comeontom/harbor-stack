@@ -3,8 +3,8 @@ services:
   # log:
   #   image: vmware/harbor-log:v1.5.2
   #   volumes:
-  #     - log_volume:/var/log/docker/:z
-  #     # - ./common/config/log/:/etc/logrotate.d/:z
+  #     - log_volume:/var/log/docker/
+  #     # - ./common/config/log/:/etc/logrotate.d/
   #   configs:
   #     - source: log_config
   #       target: /etc/logrotate.d/logrotate.conf
@@ -21,8 +21,8 @@ services:
       - source: registry_root
         target: /etc/registry/root.crt
     volumes:
-      - registry_volume:/storage:z
-      # - ./common/config/registry/:/etc/registry/:z
+      - registry_volume:/storage
+      # - ./common/config/registry/:/etc/registry/
     networks:
       - harbor
     environment:
@@ -45,7 +45,7 @@ services:
       mode: replicated
       replicas: 1
     volumes:
-      - mysql_volume:/var/lib/mysql:z
+      - mysql_volume:/var/lib/mysql
     networks:
       - harbor
     environment:
@@ -131,9 +131,9 @@ services:
       mode: replicated
       replicas: 1
     volumes:
-      - adminserver_config_volume:/etc/adminserver/config/:z
-      - adminserver_secretkey_volume:/etc/adminserver/key:z
-      - adminserver_volume:/data/:z
+      - adminserver_config_volume:/etc/adminserver/config/
+      - adminserver_secretkey_volume:/etc/adminserver/key
+      - adminserver_volume:/data/
     networks:
       - harbor
     # depends_on:
@@ -165,12 +165,12 @@ services:
       - source: ui_private_key_pem
         target: /etc/ui/private_key.pem
     volumes:
-      # - ./common/config/ui/app.conf:/etc/ui/app.conf:z
-      # - ./common/config/ui/private_key.pem:/etc/ui/private_key.pem:z
-      # - ./common/config/ui/certificates/:/etc/ui/certificates/:z
-      - ui_secretkey_volume:/etc/ui/key:z
-      - ui_ca_volume:/etc/ui/ca/:z
-      - ui_psc_volume:/etc/ui/token/:z
+      # - ./common/config/ui/app.conf:/etc/ui/app.conf
+      # - ./common/config/ui/private_key.pem:/etc/ui/private_key.pem
+      # - ./common/config/ui/certificates/:/etc/ui/certificates/
+      - ui_secretkey_volume:/etc/ui/key
+      - ui_ca_volume:/etc/ui/ca/
+      - ui_psc_volume:/etc/ui/token/
     networks:
       - harbor
     # depends_on:
@@ -198,8 +198,8 @@ services:
       - source: jobservice_config
         target: /etc/jobservice/config.yml
     volumes:
-      - jobservice_volume:/var/log/jobs:z
-      # - ./common/config/jobservice/config.yml:/etc/jobservice/config.yml:z
+      - jobservice_volume:/var/log/jobs
+      # - ./common/config/jobservice/config.yml:/etc/jobservice/config.yml
     networks:
       - harbor
     # depends_on:
@@ -236,7 +236,7 @@ services:
       - source: proxy_config
         target: /etc/nginx/nginx.conf
     # volumes:
-    #   - ./common/config/nginx:/etc/nginx:z
+    #   - ./common/config/nginx:/etc/nginx
     networks:
       - harbor
     ports:

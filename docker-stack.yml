@@ -18,8 +18,10 @@ services:
     configs:
       - source: registry_config
         target: /etc/registry/config.yml
+        mode: 0755
       - source: registry_root
         target: /etc/registry/root.crt
+        mode: 0755
     volumes:
       - registry_volume:/storage
       # - ./common/config/registry/:/etc/registry/
@@ -137,6 +139,7 @@ services:
     configs:
       - source: adminserver_key
         target: /etc/adminserver/key
+        mode: 0755
     networks:
       - harbor
     # depends_on:
@@ -165,8 +168,10 @@ services:
     configs:
       - source: ui_app_config
         target: /etc/ui/app.conf
+        mode: 0755
       - source: ui_private_key_pem
         target: /etc/ui/private_key.pem
+        mode: 0755
     volumes:
       # - ./common/config/ui/app.conf:/etc/ui/app.conf
       # - ./common/config/ui/private_key.pem:/etc/ui/private_key.pem
@@ -200,6 +205,7 @@ services:
     configs:
       - source: jobservice_config
         target: /etc/jobservice/config.yml
+        mode: 0755
     volumes:
       - jobservice_volume:/var/log/jobs
       # - ./common/config/jobservice/config.yml:/etc/jobservice/config.yml

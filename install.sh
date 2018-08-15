@@ -145,7 +145,7 @@ function check_dockercompose {
 }
 
 h2 "[Step $item]: checking installation environment ..."; let item+=1
-check_docker
+# check_docker
 # check_dockercompose
 
 if [ -f harbor*.tar.gz ]

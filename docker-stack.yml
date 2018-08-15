@@ -29,8 +29,8 @@ services:
       - GODEBUG=netdns=cgo
     command:
       ["serve", "/etc/registry/config.yml"]
-    depends_on:
-      - log
+    # depends_on:
+    #   - log
     # logging:
     #   driver: "syslog"
     #   options:  
@@ -52,8 +52,8 @@ services:
       - MYSQL_ROOT_PASSWORD=root123
     # env_file:
     #   - ./common/config/db/env
-    depends_on:
-      - log
+    # depends_on:
+    #   - log
     # logging:
     #   driver: "syslog"
     #   options:  
@@ -136,8 +136,8 @@ services:
       - adminserver_volume:/data/:z
     networks:
       - harbor
-    depends_on:
-      - log
+    # depends_on:
+    #   - log
     # logging:
     #   driver: "syslog"
     #   options:  
@@ -173,10 +173,10 @@ services:
       - ui_psc_volume:/etc/ui/token/:z
     networks:
       - harbor
-    depends_on:
-      - log
-      - adminserver
-      - registry
+    # depends_on:
+    #   - log
+    #   - adminserver
+    #   - registry
     # logging:
     #   driver: "syslog"
     #   options:  
@@ -202,15 +202,15 @@ services:
       # - ./common/config/jobservice/config.yml:/etc/jobservice/config.yml:z
     networks:
       - harbor
-    depends_on:
-      - redis
-      - ui
-      - adminserver
-    logging:
-      driver: "syslog"
-      options:  
-        syslog-address: "tcp://log:10514"
-        tag: "jobservice"
+    # depends_on:
+    #   - redis
+    #   - ui
+    #   - adminserver
+    # logging:
+    #   driver: "syslog"
+    #   options:  
+    #     syslog-address: "tcp://log:10514"
+    #     tag: "jobservice"
   redis:
     image: vmware/redis-photon:v1.5.2
     deploy:
@@ -220,8 +220,8 @@ services:
       - redis_volume:/data
     networks:
       - harbor
-    depends_on:
-      - log
+    # depends_on:
+    #   - log
     # logging:
     #   driver: "syslog"
     #   options:  
@@ -242,12 +242,12 @@ services:
     ports:
       - 8888:80
       - 443:443
-      # - 4443:4443
-    depends_on:
-      - mysql
-      - registry
-      - ui
-      - log
+      - 4443:4443
+    # depends_on:
+    #   - mysql
+    #   - registry
+    #   - ui
+    #   - log
     # logging:
     #   driver: "syslog"
     #   options:  
